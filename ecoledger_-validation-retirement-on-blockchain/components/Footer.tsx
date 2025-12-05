@@ -33,13 +33,13 @@ export default function Footer() {
             <p className="text-xs text-muted-foreground">Powered by SABZA</p>
             <div className="flex space-x-4">
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <FaTwitter className="w-5 h-5" />
+                <FaTwitter size={20} />
               </a>
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <FaLinkedin className="w-5 h-5" />
+                <FaLinkedin size={20} />
               </a>
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <FaGithub className="w-5 h-5" />
+                <FaGithub size={20} />
               </a>
             </div>
           </div>
