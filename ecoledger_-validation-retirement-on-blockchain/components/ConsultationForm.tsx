@@ -65,7 +65,7 @@ const ConsultationForm: React.FC = () => {
 
       {open && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[1000]">
-          <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md relative m-4">
+          <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md relative m-4 max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setOpen(false)}
               className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition-colors"
