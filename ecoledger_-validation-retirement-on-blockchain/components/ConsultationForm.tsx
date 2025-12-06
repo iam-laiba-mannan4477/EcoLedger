@@ -28,7 +28,7 @@ const ConsultationForm: React.FC = () => {
     setStatus("loading");
 
     try {
-      const res = await fetch("http://localhost:5090/api/consultation", {
+      const res = await fetch("http://34.207.75.185:5090/api/consultation", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
