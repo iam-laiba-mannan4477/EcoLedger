@@ -41,7 +41,7 @@ def consultation():
             "time": time,
             "message": message,
             "org": "SABZA",
-            "lead": "EcoLedger",
+            "lead": "EcoLedger (Carbon Credits Management)",
             "source": "Consultation Form",
             "createdAt": datetime.utcnow()
         }
