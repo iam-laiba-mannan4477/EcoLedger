@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecoledger-frontend
+  labels:
+    app: ecoledger-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ecoledger-frontend
+  template:
+    metadata:
+      labels:
+        app: ecoledger-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: laiba777/ecoledger-frontend:v12
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecoledger-backend
+  labels:
+    app: ecoledger-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ecoledger-backend
+  template:
+    metadata:
+      labels:
+        app: ecoledger-backend
+    spec:
+      containers:
+      - name: backend
+        image: laiba777/ecoledger-backend:v1
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
