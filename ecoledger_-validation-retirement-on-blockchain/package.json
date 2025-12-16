@@ -1,12 +1,13 @@
 {
-  "name": "ecoledger:-validation-&-retirement-on-blockchain",
+  "name": "ecoledger-validation-retirement-on-blockchain",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run --coverage"
   },
   "dependencies": {
     "lucide-react": "^0.544.0",
@@ -18,6 +19,11 @@
     "@types/node": "^22.19.1",
     "@vitejs/plugin-react": "^5.0.0",
     "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "vite": "^6.2.0",
+    "vitest": "^0.34.3",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "jsdom": "^22.1.0"
   }
 }
+
