@@ -48,8 +48,8 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
-            -Dsonar.projectKey=EcoLedger-Frontend
-            -Dsonar.organization=iam-laiba-mannan4477
+            -Dsonar.projectKey=iam-laiba-mannan4477
+            -Dsonar.organization=laiba mannan
             -Dsonar.sources=.
 
   docker:
