@@ -49,7 +49,7 @@ jobs:
         with:
           args: >
             -Dsonar.projectKey=iam-laiba-mannan4477
-            -Dsonar.organization=laiba mannan
+            -Dsonar.organization=iam-laiba-mannan4477
             -Dsonar.sources=.
 
   docker:
