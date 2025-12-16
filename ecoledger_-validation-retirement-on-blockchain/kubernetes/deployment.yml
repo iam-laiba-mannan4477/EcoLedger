@@ -17,6 +17,7 @@ spec:
       containers:
       - name: frontend
         image: laiba777/ecoledger-frontend:v12
+        imagePullPolicy: Always 
         ports:
         - containerPort: 80
         resources:
