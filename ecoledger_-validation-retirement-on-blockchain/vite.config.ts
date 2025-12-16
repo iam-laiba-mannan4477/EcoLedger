@@ -3,28 +3,17 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
-
-  return {
-    plugins: [react()],
-    define: {
-      'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-    },
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, '.'),
+    const env = loadEnv(mode, '.', '');
+    return {
+      plugins: [react()],
+      define: {
+        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
       },
-    },
-    test: {
-      environment: 'jsdom',
-      coverage: {
-        provider: 'v8',       // Add this line for Vitest v4 coverage
-        reporter: ['text', 'lcov'], // for console & SonarCloud
-        reportsDirectory: 'coverage',
-        include: ['src/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}'],
-      },
-      include: ['**/*.test.ts', '**/*.test.tsx'],
-    },
-  };
+      resolve: {
+        alias: {
+          '@': path.resolve(__dirname, '.'),
+        }
+      }
+    };
 });
