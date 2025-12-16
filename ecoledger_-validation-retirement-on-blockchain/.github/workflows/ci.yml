@@ -13,6 +13,9 @@ env:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ecoledger_-validation-retirement-on-blockchain
     steps:
       - uses: actions/checkout@v4
 
@@ -32,6 +35,9 @@ jobs:
   sonar:
     needs: ci
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ecoledger_-validation-retirement-on-blockchain
     steps:
       - uses: actions/checkout@v4
 
@@ -48,6 +54,9 @@ jobs:
   docker:
     needs: sonar
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ecoledger_-validation-retirement-on-blockchain
     steps:
       - uses: actions/checkout@v4
 
@@ -89,6 +98,9 @@ jobs:
   update-manifest:
     needs: checkov
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ecoledger_-validation-retirement-on-blockchain
     steps:
       - uses: actions/checkout@v4
 
