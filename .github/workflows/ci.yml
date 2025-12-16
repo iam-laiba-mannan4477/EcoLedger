@@ -52,6 +52,11 @@ jobs:
       - name: Run tests with coverage
         run: npm test
 
+      - name: Check coverage report file
+        run: |
+          ls -l coverage/
+          head -20 coverage/lcov.info || echo "No coverage file found or file is empty"
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
