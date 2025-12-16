@@ -41,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: SonarQube Scan
+      - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -49,6 +49,7 @@ jobs:
         with:
           args: >
             -Dsonar.projectKey=EcoLedger-Frontend
+            -Dsonar.organization=iam-laiba-mannan4477
             -Dsonar.sources=.
 
   docker:
