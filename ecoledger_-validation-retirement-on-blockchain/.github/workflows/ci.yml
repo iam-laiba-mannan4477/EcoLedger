@@ -100,4 +100,4 @@ jobs:
           git config user.email "actions@github.com"
           git add kubernetes/frontend.yml
           git commit -m "Update frontend image to $DOCKER_TAG"
-          git push
+          git push 
