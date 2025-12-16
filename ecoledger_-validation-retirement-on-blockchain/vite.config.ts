@@ -14,6 +14,10 @@ export default defineConfig(({ mode }) => {
         alias: {
           '@': path.resolve(__dirname, '.'),
         }
+      },
+      test: {                  // <-- Add this block
+        globals: true,         // enable global expect, test, etc.
+        environment: 'jsdom',  // needed for React testing environment
       }
     };
 });
