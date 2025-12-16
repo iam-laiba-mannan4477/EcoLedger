@@ -3,6 +3,8 @@ name: Frontend DevSecOps CI (GitOps)
 on:
   push:
     branches: ["main"]
+  workflow_dispatch:
+
 
 env:
   DOCKER_IMAGE: laiba777/ecoledger-frontend
