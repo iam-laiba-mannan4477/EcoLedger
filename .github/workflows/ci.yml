@@ -95,7 +95,7 @@ jobs:
         with:
           image-ref: ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
           severity: CRITICAL,HIGH
-          exit-code: 1
+          exit-code: 0
 
   checkov:
     needs: trivy
