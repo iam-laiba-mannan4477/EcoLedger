@@ -8,7 +8,7 @@ on:
 
 env:
   DOCKER_IMAGE: laiba777/ecoledger-frontend
-  DOCKER_TAG: v13-${{ github.run_number }}
+  DOCKER_TAG: v14-${{ github.run_number }}
 
 jobs:
   ci:
