@@ -42,3 +42,8 @@ variable "node_pool_name" {
   type    = string
   default = "sabza-node-pool"
 }
+
+variable "gke_security_group" {
+  type    = string
+  default = "sabza-gke-admins@googlegroups.com"
+}
