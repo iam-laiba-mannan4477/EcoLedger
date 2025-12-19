@@ -28,6 +28,16 @@ variable "subnet_name" {
   default = "sabza-subnet"
 }
 
+variable "secondary_range_pods" {
+  type    = string
+  default = "pods-range"
+}
+
+variable "secondary_range_services" {
+  type    = string
+  default = "services-range"
+}
+
 variable "node_count" {
   type    = number
   default = 3
@@ -41,9 +51,4 @@ variable "machine_type" {
 variable "node_pool_name" {
   type    = string
   default = "sabza-node-pool"
-}
-
-variable "gke_security_group" {
-  type    = string
-  default = "sabza-gke-admins@googlegroups.com"
 }
