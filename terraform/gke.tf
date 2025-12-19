@@ -23,8 +23,6 @@ resource "google_container_cluster" "primary" {
     }
   }
 
-  # ---------------- CHECKOV FIXES ----------------
-
   master_auth {
     client_certificate_config {
       issue_client_certificate = false
@@ -47,10 +45,18 @@ resource "google_container_cluster" "primary" {
   }
 
   node_config {
+    machine_type = var.machine_type
+
     workload_metadata_config {
       mode = "GKE_METADATA"
     }
+
+    shielded_instance_config {
+      enable_secure_boot = true       # <<<<<<<<<<<<<<<< Add this
+    }
   }
+
+  enable_vpc_flow_logs = true         # <<<<<<<<<<<<<<<< Add this here at cluster level
 
   master_authorized_networks_config {
     cidr_blocks {
