@@ -34,12 +34,9 @@ resource "google_container_cluster" "primary" {
   }
 
   private_cluster_config {
-    enable_private_nodes     = true
-    enable_private_endpoint  = false
-    master_ipv4_cidr_block   = "172.16.0.0/28"
-
-    # Enable intranode visibility (Fix for CKV_GCP_61)
-    enable_intranode_visibility = true
+    enable_private_nodes    = true
+    enable_private_endpoint = false
+    master_ipv4_cidr_block  = "172.16.0.0/28"
   }
 
   network_policy {
@@ -51,15 +48,10 @@ resource "google_container_cluster" "primary" {
     workload_metadata_config {
       mode = "GKE_METADATA"
     }
-
     shielded_instance_config {
-      enable_secure_boot          = true
-      enable_integrity_monitoring = true  # Fix for CKV_GCP_72
+      enable_integrity_monitoring = true   # Required for integrity monitoring
+      enable_secure_boot          = true   # Required for secure boot
     }
-  }
-
-  google_groups_config {
-    enabled = true  # Fix for CKV_GCP_65
   }
 
   master_authorized_networks_config {
@@ -67,6 +59,10 @@ resource "google_container_cluster" "primary" {
       cidr_block   = "35.191.0.0/16"
       display_name = "gcp-health-checks"
     }
+  }
+
+  google_groups_config {
+    security_group = "your-security-group@example.com"  # Replace with actual Google Group email for RBAC
   }
 
   resource_labels = {

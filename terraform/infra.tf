@@ -24,15 +24,16 @@ resource "google_compute_network" "vpc" {
 }
 
 resource "google_compute_subnetwork" "subnet" {
-  name          = "sabza-subnet"
-  ip_cidr_range = "10.10.0.0/20"
-  network       = google_compute_network.vpc.id
-  region        = var.region
+  name                    = "sabza-subnet"
+  ip_cidr_range           = "10.10.0.0/20"
+  network                 = google_compute_network.vpc.id
+  region                  = var.region
 
   private_ip_google_access = true
 
+  enable_flow_logs = true   # <--- Enable VPC Flow Logs here
+
   log_config {
-    # Enable VPC Flow Logs to fix CKV_GCP_61
     aggregation_interval = "INTERVAL_5_SEC"
     flow_sampling        = 0.5
     metadata             = "INCLUDE_ALL_METADATA"
@@ -55,3 +56,4 @@ resource "google_compute_firewall" "allow_http_https" {
     "130.211.0.0/22"
   ]
 }
+
