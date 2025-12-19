@@ -23,8 +23,6 @@ resource "google_container_cluster" "primary" {
     }
   }
 
-  # ---------------- CHECKOV FIXES ----------------
-
   master_auth {
     client_certificate_config {
       issue_client_certificate = false
@@ -49,6 +47,10 @@ resource "google_container_cluster" "primary" {
   node_config {
     workload_metadata_config {
       mode = "GKE_METADATA"
+    }
+
+    shielded_instance_config {
+      enable_secure_boot = true
     }
   }
 
