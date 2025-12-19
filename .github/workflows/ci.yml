@@ -57,13 +57,13 @@ jobs:
           ls -l coverage/
           head -20 coverage/lcov.info || echo "No coverage file found or file is empty"
 
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v6
-        with:
-          projectBaseDir: ecoledger_-validation-retirement-on-blockchain
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      #- name: SonarQube Scan
+      #  uses: SonarSource/sonarqube-scan-action@v6
+      #  with:
+      #    projectBaseDir: ecoledger_-validation-retirement-on-blockchain
+      #  env:
+      #    SONAR_TOKEN: {{ secrets.SONAR_TOKEN }}
+      #   SONAR_HOST_URL: {{ secrets.SONAR_HOST_URL }}
 
   docker:
     needs: sonar

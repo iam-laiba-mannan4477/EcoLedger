@@ -28,6 +28,14 @@ resource "google_compute_subnetwork" "subnet" {
   ip_cidr_range = "10.10.0.0/20"
   network       = google_compute_network.vpc.id
   region        = var.region
+
+  private_ip_google_access = true
+
+  log_config {
+    aggregation_interval = "INTERVAL_5_SEC"
+    flow_sampling        = 0.5
+    metadata             = "INCLUDE_ALL_METADATA"
+  }
 }
 
 resource "google_compute_firewall" "allow_http_https" {
@@ -39,6 +47,10 @@ resource "google_compute_firewall" "allow_http_https" {
     ports    = ["80", "443"]
   }
 
-  direction     = "INGRESS"
-  source_ranges = ["0.0.0.0/0"]
+  direction = "INGRESS"
+
+  source_ranges = [
+    "35.191.0.0/16",
+    "130.211.0.0/22"
+  ]
 }

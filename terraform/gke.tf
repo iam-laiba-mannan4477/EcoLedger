@@ -23,6 +23,50 @@ resource "google_container_cluster" "primary" {
     }
   }
 
-  # Add this line to disable deletion protection
+  # ---------------- CHECKOV FIXES ----------------
+
+  master_auth {
+    client_certificate_config {
+      issue_client_certificate = false
+    }
+  }
+
+  binary_authorization {
+    evaluation_mode = "PROJECT_SINGLETON_POLICY_ENFORCE"
+  }
+
+  private_cluster_config {
+    enable_private_nodes    = true
+    enable_private_endpoint = false
+    master_ipv4_cidr_block  = "172.16.0.0/28"
+  }
+
+  network_policy {
+    enabled  = true
+    provider = "CALICO"
+  }
+
+  node_config {
+    workload_metadata_config {
+      mode = "GKE_METADATA"
+    }
+  }
+
+  master_authorized_networks_config {
+    cidr_blocks {
+      cidr_block   = "35.191.0.0/16"
+      display_name = "gcp-health-checks"
+    }
+  }
+
+  resource_labels = {
+    environment = "production"
+    owner       = "laiba"
+  }
+
+  release_channel {
+    channel = "REGULAR"
+  }
+
   deletion_protection = false
 }
