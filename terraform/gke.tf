@@ -34,9 +34,12 @@ resource "google_container_cluster" "primary" {
   }
 
   private_cluster_config {
-    enable_private_nodes    = true
-    enable_private_endpoint = false
-    master_ipv4_cidr_block  = "172.16.0.0/28"
+    enable_private_nodes     = true
+    enable_private_endpoint  = false
+    master_ipv4_cidr_block   = "172.16.0.0/28"
+
+    # Enable intranode visibility (Fix for CKV_GCP_61)
+    enable_intranode_visibility = true
   }
 
   network_policy {
@@ -50,8 +53,13 @@ resource "google_container_cluster" "primary" {
     }
 
     shielded_instance_config {
-      enable_secure_boot = true
+      enable_secure_boot          = true
+      enable_integrity_monitoring = true  # Fix for CKV_GCP_72
     }
+  }
+
+  google_groups_config {
+    enabled = true  # Fix for CKV_GCP_65
   }
 
   master_authorized_networks_config {
