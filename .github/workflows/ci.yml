@@ -57,13 +57,14 @@ jobs:
           ls -l coverage/
           head -20 coverage/lcov.info || echo "No coverage file found or file is empty"
 
+      # Uncomment and configure SonarQube scan if needed
       #- name: SonarQube Scan
       #  uses: SonarSource/sonarqube-scan-action@v6
       #  with:
       #    projectBaseDir: ecoledger_-validation-retirement-on-blockchain
       #  env:
-      #    SONAR_TOKEN: {{ secrets.SONAR_TOKEN }}
-      #   SONAR_HOST_URL: {{ secrets.SONAR_HOST_URL }}
+      #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #    SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
   docker:
     needs: sonar
@@ -123,9 +124,11 @@ jobs:
           sed -i "s|image: .*|image: $DOCKER_IMAGE:$DOCKER_TAG|" kubernetes/deployment.yml
 
       - name: Commit & push manifest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add kubernetes/deployment.yml
           git commit -m "Update frontend image to $DOCKER_TAG"
-          git push
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
