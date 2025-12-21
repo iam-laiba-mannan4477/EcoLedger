@@ -88,7 +88,6 @@ resource "google_container_node_pool" "primary_nodes" {
 
     shielded_instance_config {
       enable_secure_boot          = true
-      enable_vtpm                 = true
       enable_integrity_monitoring = true
     }
 
