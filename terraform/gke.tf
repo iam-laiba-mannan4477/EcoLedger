@@ -10,6 +10,8 @@ resource "google_container_cluster" "primary" {
   remove_default_node_pool = true
   initial_node_count       = 1
 
+  enable_intranode_visibility = true
+
   release_channel {
     channel = "REGULAR"
   }
@@ -31,7 +33,8 @@ resource "google_container_cluster" "primary" {
   }
 
   network_policy {
-    enabled = true
+    enabled  = true
+    provider = "CALICO"
   }
 
   binary_authorization {
@@ -41,7 +44,7 @@ resource "google_container_cluster" "primary" {
   master_authorized_networks_config {
     cidr_blocks {
       cidr_block   = "10.0.0.0/8"
-      display_name = "internal"
+      display_name = "internal-access"
     }
   }
 
@@ -49,25 +52,31 @@ resource "google_container_cluster" "primary" {
     workload_pool = "${var.project_id}.svc.id.goog"
   }
 
-  resource_labels = {
-    environment = "dev"
-    owner       = "sabza"
+  authenticator_groups_config {
+    security_group = "sabza-gke-admins@googlegroups.com"
+  }
+
+  node_config {
+    workload_metadata_config {
+      mode = "GKE_METADATA"
+    }
   }
 
   logging_service    = "logging.googleapis.com/kubernetes"
   monitoring_service = "monitoring.googleapis.com/kubernetes"
 
-  google_groups_config {
-    security_group = var.gke_security_group
+  resource_labels = {
+    environment = "production"
+    owner       = "sabza"
   }
+
+  deletion_protection = false
 }
 
-# REQUIRED by CKV_GCP_123
 resource "google_container_node_pool" "primary_nodes" {
-  name     = var.node_pool_name
-  cluster = google_container_cluster.primary.name
-  location = var.region
-
+  name       = var.node_pool_name
+  location   = var.region
+  cluster    = google_container_cluster.primary.name
   node_count = var.node_count
 
   node_config {
@@ -78,8 +87,9 @@ resource "google_container_node_pool" "primary_nodes" {
     ]
 
     shielded_instance_config {
-      enable_secure_boot = true
-      enable_vtpm        = true
+      enable_secure_boot          = true
+      enable_vtpm                 = true
+      enable_integrity_monitoring = true
     }
 
     workload_metadata_config {

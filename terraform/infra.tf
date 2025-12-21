@@ -5,9 +5,9 @@ resource "google_compute_network" "vpc" {
 
 resource "google_compute_subnetwork" "subnet" {
   name          = var.subnet_name
-  region        = var.region
-  network       = google_compute_network.vpc.id
   ip_cidr_range = "10.10.0.0/20"
+  network       = google_compute_network.vpc.id
+  region        = var.region
 
   private_ip_google_access = true
 
@@ -28,30 +28,20 @@ resource "google_compute_subnetwork" "subnet" {
   }
 }
 
-# REQUIRED for CKV2_GCP_18
-resource "google_compute_firewall" "allow_internal" {
-  name    = "allow-internal"
+resource "google_compute_firewall" "allow_http_https" {
+  name    = "allow-http-https"
   network = google_compute_network.vpc.name
-  direction = "INGRESS"
 
-  source_ranges = [
-    "10.10.0.0/20",
-    "10.10.16.0/20",
-    "10.10.32.0/24"
-  ]
+  direction = "INGRESS"
 
   allow {
     protocol = "tcp"
-    ports    = ["0-65535"]
+    ports    = ["80", "443"]
   }
 
-  allow {
-    protocol = "udp"
-    ports    = ["0-65535"]
-  }
-
-  allow {
-    protocol = "icmp"
-  }
+  source_ranges = [
+    "35.191.0.0/16",
+    "130.211.0.0/22"
+  ]
 }
 
