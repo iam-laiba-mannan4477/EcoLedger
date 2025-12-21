@@ -8,30 +8,91 @@ resource "google_container_cluster" "primary" {
   subnetwork = google_compute_subnetwork.subnet.id
 
   remove_default_node_pool = true
+  initial_node_count       = 1
+
+  release_channel {
+    channel = "REGULAR"
+  }
 
   ip_allocation_policy {
     cluster_secondary_range_name  = var.secondary_range_pods
     services_secondary_range_name = var.secondary_range_services
-    use_ip_aliases               = true
   }
 
-  node_config {
-    machine_type = var.machine_type
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/cloud-platform",
-    ]
+  private_cluster_config {
+    enable_private_nodes    = true
+    enable_private_endpoint = false
   }
 
-  node_pool {
-    name       = var.node_pool_name
-    node_count = var.node_count
-
-    node_config {
-      machine_type = var.machine_type
-      oauth_scopes = [
-        "https://www.googleapis.com/auth/cloud-platform",
-      ]
+  master_auth {
+    client_certificate_config {
+      issue_client_certificate = false
     }
+  }
+
+  network_policy {
+    enabled = true
+  }
+
+  binary_authorization {
+    evaluation_mode = "PROJECT_SINGLETON_POLICY_ENFORCE"
+  }
+
+  master_authorized_networks_config {
+    cidr_blocks {
+      cidr_block   = "10.0.0.0/8"
+      display_name = "internal"
+    }
+  }
+
+  workload_identity_config {
+    workload_pool = "${var.project_id}.svc.id.goog"
+  }
+
+  resource_labels = {
+    environment = "dev"
+    owner       = "sabza"
+  }
+
+  logging_service    = "logging.googleapis.com/kubernetes"
+  monitoring_service = "monitoring.googleapis.com/kubernetes"
+
+  google_groups_config {
+    security_group = var.gke_security_group
   }
 }
 
+# REQUIRED by CKV_GCP_123
+resource "google_container_node_pool" "primary_nodes" {
+  name     = var.node_pool_name
+  cluster = google_container_cluster.primary.name
+  location = var.region
+
+  node_count = var.node_count
+
+  node_config {
+    machine_type = var.machine_type
+
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ]
+
+    shielded_instance_config {
+      enable_secure_boot = true
+      enable_vtpm        = true
+    }
+
+    workload_metadata_config {
+      mode = "GKE_METADATA"
+    }
+
+    labels = {
+      role = "worker"
+    }
+  }
+
+  management {
+    auto_repair  = true
+    auto_upgrade = true
+  }
+}
