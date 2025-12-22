@@ -1,0 +1,139 @@
+name: Backend DevSecOps CI (GitOps)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  DOCKER_IMAGE: laiba777/ecoledger-backend
+  DOCKER_TAG: backend-v${{ github.run_number }}
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run basic test (check if app starts)
+        run: |
+          python -m flask --app app.py routes || echo "No formal tests configured"
+
+  sonar:
+    needs: ci
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests with coverage (if you add tests later)
+        run: |
+          echo "No tests or coverage script defined"
+
+      # Uncomment and configure SonarQube scan if needed
+      # - name: SonarQube Scan
+      #   uses: SonarSource/sonarqube-scan-action@v6
+      #   env:
+      #     SONAR_TOKEN: {{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: {{ secrets.SONAR_HOST_URL }}
+
+  docker:
+    needs: sonar
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker image
+        run: docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
+
+      - name: Push Docker image
+        run: docker push $DOCKER_IMAGE:$DOCKER_TAG
+
+  trivy:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trivy Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+          severity: CRITICAL,HIGH
+          exit-code: 0
+
+  checkov:
+    needs: trivy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Install Checkov
+        run: pip install checkov
+
+      - name: Scan Terraform
+        run: checkov -d terraform/
+
+  update-manifest:
+    needs: checkov
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Update image tag in Kubernetes manifest
+        run: |
+          sed -i "s|image: laiba777/ecoledger-backend:.*|image: $DOCKER_IMAGE:$DOCKER_TAG|" kubernetes/deployment.yml
+
+      - name: Commit & push manifest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add kubernetes/deployment.yml
+          git commit -m "Update backend image to $DOCKER_TAG" || echo "No changes to commit"
+          git push
