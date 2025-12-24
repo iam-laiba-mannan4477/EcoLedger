@@ -18,7 +18,7 @@ spec:
       - name: backend
         image: laiba777/ecoledger-backend:backend-v1
         ports:
-        - containerPort: 5000
+        - containerPort: 5090
         resources:
           requests:
             memory: "512Mi"
