@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  frontend:
+    build:
+      context: ./ecoledger_-validation-retirement-on-blockchain
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - ecoledger-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+    networks:
+      - ecoledger-network
+
+networks:
+  ecoledger-network:
+    driver: bridge
