@@ -14,7 +14,7 @@ spec:
           service:
             name: ecoledger-backend-service
             port:
-              number: 5000
+              number: 5090
       - path: /
         pathType: Prefix
         backend:
