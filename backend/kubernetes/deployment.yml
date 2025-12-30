@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: laiba777/ecoledger-backend:backend-v7
+        image: laiba777/ecoledger-backend:backend-v9
         ports:
         - containerPort: 5090
         resources:
