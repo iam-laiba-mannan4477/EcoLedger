@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ecoledger-backend
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/iam-laiba-mannan4477/EcoLedger.git
+    targetRevision: main
+    path: backend/kubernetes
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ecoledger
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
