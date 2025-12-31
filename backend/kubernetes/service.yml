@@ -9,4 +9,4 @@ spec:
   - protocol: TCP
     port: 5090
     targetPort: 5090
-  type: ClisterIP
+  type: ClusterIP
